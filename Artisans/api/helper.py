@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 def get_geometry(input):
     base_endpoint_places = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
     params = {
-    "key": 'AIzaSyAFbHM1j8bJmZ5cqqyFM48HkKMAldFq6qc',
+    "key": '',
     "input": input,
     "locationbias":"point:9.0820,8.6753",
     "inputtype": "textquery",
