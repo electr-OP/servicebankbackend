@@ -31,7 +31,7 @@ class User(AbstractBaseUser):
         unique=True,
         null=True
     )
-    phone = models.CharField(help_text='Contact phone number',max_length=20, null=True,blank=True)
+    phone = models.CharField(help_text='Contact phone number',unique=True, max_length=20, null=True,blank=True)
     password = models.CharField(max_length=255, null=False)
     uid = models.UUIDField(default=uuid.uuid4, editable=False,null=True)
     first_name = models.CharField(max_length=255, null=False)
@@ -55,6 +55,7 @@ class User(AbstractBaseUser):
     has_added_card = models.BooleanField(default=False)
     registration_token = models.CharField(max_length=20,null=True,blank=True)
     referral_code= models.CharField(max_length=20,default=generate_referral_id,unique=True,null=True,blank=True)
+    token = models.CharField(max_length=20,null=True,blank=True)
     email_activated = models.BooleanField(default=False)
     is_artisan = models.BooleanField(default=False)
     is_agent = models.BooleanField(default=False)

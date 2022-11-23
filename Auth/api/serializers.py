@@ -21,11 +21,11 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = User
-        fields = ("email","first_name","last_name","password")
+        fields = ("phone","email","first_name","last_name","password", "is_artisan")
     
-    def create(self, validated_data):
-        # validated_data.pop('reference', None)
-        return super().create(validated_data)
+    # def create(self, validated_data):
+    #     # validated_data.pop('reference', None)
+    #     return super().create(validated_data)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = User
-        fields = ("first_name","last_name","address","longitude","latitude","email","city","gender","country","wallet_balance","referral_code","has_updated_profile","email_activated",
+        fields = ("first_name","last_name","phone","is_artisan","address","longitude","latitude","email","city","gender","country","wallet_balance","referral_code","has_updated_profile","email_activated",
         "has_added_card","date_of_birth","is_active","currency","image","uid","public_key","secret_key")
     
     def to_representation(self, instance):

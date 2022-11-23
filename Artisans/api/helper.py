@@ -1,10 +1,11 @@
 import requests
 from urllib.parse import urlencode
+from django.conf import settings
 
 def get_geometry(input):
     base_endpoint_places = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
     params = {
-    "key": '',
+    "key": settings.GOOGLE_PLACE_API_KEY,
     "input": input,
     "locationbias":"point:9.0820,8.6753",
     "inputtype": "textquery",

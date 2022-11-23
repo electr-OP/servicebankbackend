@@ -1,1 +1,1 @@
-from artisans import *
+from Artisans.models.artisans import *

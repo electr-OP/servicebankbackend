@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
 from Notification.models import EmailNotificationModel, SMSNotificationModel
-from Artisans.api.serializers import UserRegisterationSerializer
+from Auth.api.serializers import UserRegisterationSerializer
 from rest_framework_tracking.mixins import LoggingMixin
 from Artisans.api.helper import get_geometry
 from django.template.loader import render_to_string
@@ -91,11 +91,12 @@ class ArtisanRegisterView(LoggingMixin,APIView):
             
         #send otp
         #send sms token to user
-        SMSNotificationModel.objects.create(
-                country=request.data.get('country'),
-                phone_number=request.data.get('phone'),
-                message="Your One-Time-Password is "+str(artisan.email_activation_token)
-            )
+        if phone:
+            SMSNotificationModel.objects.create(
+                    country=request.data.get('country'),
+                    phone_number=request.data.get('phone'),
+                    message="Your One-Time-Password is "+str(artisan.email_activation_token)
+                )
         #send email to the user with the email address
         # extra_data = {
         #     "merchant_id":merchant.id,
