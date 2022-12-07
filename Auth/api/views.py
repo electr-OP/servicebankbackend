@@ -153,7 +153,7 @@ class RegisterView(LoggingMixin,APIView):
                 text_content = strip_tags(html_content) 
                 EmailNotificationModel.objects.create(
                     user=initializer,
-                    email_address=user_details.data.get('email'),
+                    email_address=user_details.get('email'),
                     email_type="2",
                     subject="EMAIL VERIFICATION",
                     message=text_content,
@@ -161,7 +161,7 @@ class RegisterView(LoggingMixin,APIView):
                 )
                 SMSNotificationModel.objects.create(
                     user=initializer,
-                    phone_number=user_details.data.get('phone'),
+                    phone_number=user_details.get('phone'),
                     message=initializer.token,
 
                 )

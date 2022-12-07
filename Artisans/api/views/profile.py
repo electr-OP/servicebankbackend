@@ -8,34 +8,37 @@ from rest_framework.response import Response
 from Artisans.api.serializers.profile import *
 from rest_framework.permissions import IsAuthenticated
 from Artisans.models import ArtisanModel
+from Artisans.models import ArtisanEnquiry
 from Job.models import ProfessionModel
 # from Merchant.permissions import IsMerchantUserPermission
 from rest_framework_tracking.mixins import LoggingMixin
 # from Merchant.helper import get_geometry
 
 
-# class GetAnArtisanView(LoggingMixin,APIView):
-#     """
-#         Get an artisan detail
-#     """
+class GetAnArtisanView(LoggingMixin,APIView):
+    """
+        Get an artisan detail
+    """
 
-#     permission_classes = [IsAuthenticated & IsMerchantUserPermission]
+    permission_classes = [IsAuthenticated]
 
-#     def post(self, request):
-#         serializer = MerchantIDSerializer(data=request.data)
-#         if serializer.is_valid():
-#             merchant_id = request.data['merchant_id']
-#             merchant = MerchantModel.objects.filter(merchant_id=merchant_id)
-#             serializer = MerchantSerializer(merchant, many=True)
-#             data = serializer.data[0]
-#             pref_pickup_locs_data = data.pop("pref_pickup_locs")
-#             pref_pickup_locs = []
-#             for item in pref_pickup_locs_data:
-#                 inst = PrefPickupLocations.objects.get(id=item)
-#                 pref_pickup_locs.append(inst.location)
-#             data["pref_pickup_locs"] = pref_pickup_locs
-#             return Response(data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        
+        artisan_id = request.data['artisan_id']
+        try:
+            artisan = ArtisanModel.objects.get(artisan_id=artisan_id)
+        except ArtisanModel.DoesNotExist:
+            return Response({"success":False ,"detail":"Arisan Not Found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = ArtisanSerializer(artisan)
+        data = serializer.data
+        # pref_pickup_locs_data = data.pop("pref_pickup_locs")
+        # pref_pickup_locs = []
+        # for item in pref_pickup_locs_data:
+        #     inst = PrefPickupLocations.objects.get(id=item)
+        #     pref_pickup_locs.append(inst.location)
+        # data["pref_pickup_locs"] = pref_pickup_locs
+        return Response({"success":True ,"detail":data}, status=status.HTTP_200_OK)
+        
 
 
 # class GetAllUsersMerchantView(LoggingMixin,APIView):
@@ -179,3 +182,42 @@ class UpdateArtisanProfileView(LoggingMixin,APIView):
 
 #             return Response({"detail":"Rate Updated"}, status=status.HTTP_200_OK)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetEnquiriesView(LoggingMixin, APIView):
+
+    """
+        Update artisan profile
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        artisan_id = request.data.get('artisan_id')
+        artisan = ArtisanModel.objects.get(artisan_id=artisan_id)
+        enquiry = ArtisanEnquiry.objects.filter(artisan=artisan)
+        enquiry_pending = ArtisanEnquiry.objects.filter(artisan=artisan, response='PENDING')
+        enquiry_accept = ArtisanEnquiry.objects.filter(artisan=artisan, response='ACCEPT')
+
+        enquiry_data = EnquirySerializer(enquiry, many=True).data
+        enquiry_pending_data = EnquirySerializer(enquiry_pending, many=True).data
+        enquiry_accept_data = EnquirySerializer(enquiry_accept, many=True).data
+
+
+        return Response({'success':True, 'detail':{'all': enquiry_data, 'pending': enquiry_pending_data,
+                            'accept': enquiry_accept_data}}, status=status.HTTP_200_OK)
+
+                
+class UpdateEnquiryView(LoggingMixin, APIView):
+
+     permission_classes = [IsAuthenticated]
+
+     def post(self, request):
+        response = request.data.get('response')
+        enquiry_id = request.data.get('enquiry_id')
+
+        enquiry = ArtisanEnquiry.objects.get(id=enquiry_id)
+        enquiry.response = response
+        enquiry.save()
+
+        return Response({'success':True, 'detail':'Enquiry Updated'})

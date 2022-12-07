@@ -32,6 +32,7 @@ urlpatterns = [
     
     path('api/artisans/', include('Artisans.api.urls'), name='artisan'),
     path('api/job/', include('Job.api.urls'), name='job'),
+    path('api/payment/', include('Payment.api.urls'), name='payment'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

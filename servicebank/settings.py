@@ -61,7 +61,8 @@ INSTALLED_APPS += [
     "Auth",
     "Notification",
     "Referral",
-    "Job"
+    "Job",
+    "Payment"
 ]
 
 MIDDLEWARE = [
@@ -221,3 +222,5 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GOOGLE_PLACE_API_KEY = env("GOOGLE_PLACE_API_KEY")
+
+PAYSTACK_SECRET_KEY =  env('PAYSTACK_SECRET_KEY') 

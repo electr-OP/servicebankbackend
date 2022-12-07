@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Artisans.models import ArtisanModel
+from Artisans.models import ArtisanModel, ArtisanEnquiry
 
 
 class ArtisanSerializer(serializers.ModelSerializer):
@@ -26,3 +26,11 @@ class ArtisanUpdateSerializer(serializers.ModelSerializer):
 
         # Tuple of serialized custom model fields
         fields = ('artisan_id',"address","latitude","longitude","website","description","logo", "country", "state", "state_code", "city", "profession", "has_set_profile")
+
+
+class EnquirySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ArtisanEnquiry
+        
+        fields = '__all__'
