@@ -117,13 +117,26 @@ WSGI_APPLICATION = "servicebank.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+ 'default': {
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME':env("DB_NAME"),
+         'USER': env("DB_USERNAME"),
+         'PASSWORD': env("DB_PASSWORD"),
+         'HOST': env("DB_HOST"),
+         'PORT': env("DB_PORT"),
+         'OPTIONS': {
+            'charset': 'utf8',
+         }
     }
 }
-
 
 API_KEY_CUSTOM_HEADER = "HTTP_ACCESS_KEY"
 
