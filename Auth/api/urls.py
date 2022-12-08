@@ -1,4 +1,3 @@
-from tkinter import Y
 from django.urls import include, path
 from Auth.api.views import *
 
