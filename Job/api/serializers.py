@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Artisans.models import ArtisanModel
+from Artisans.models import ArtisanModel, ArtisanProfession
 from Auth.api.serializers import UserSerializer
 from ..models.professions import ProfessionModel
 from django.contrib.auth import get_user_model
@@ -36,10 +36,26 @@ class JobArtisanSerializer(serializers.ModelSerializer):
 class ProfessionSerializer(serializers.ModelSerializer):
 
     """
-        Transport type serializer
+        Profession serializer
     """
     class Meta:
         model = ProfessionModel
 
         # Tuple of serialized custom model fields
         fields = "__all__"
+
+
+class ArtisanProfessionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ArtisanProfession
+        fields = "__all__"
+
+    def to_representation(self, instance):
+
+        result = super(ArtisanProfessionSerializer, self).to_representation(instance)
+
+        name = ProfessionModel.objects.get(name=instance.name)
+        result['name'] = name.name
+
+        return result

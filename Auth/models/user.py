@@ -87,6 +87,11 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+    def get_all_permissions(user=None):
+        if user.is_admin:
+            
+            return set()
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"

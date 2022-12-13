@@ -10,6 +10,7 @@ from Artisans.api.serializers.profile import ArtisanSerializer
 from Job.models.professions import ProfessionModel
 from Artisans.models import ArtisanModel
 from Artisans.models import ArtisanEnquiry
+from Artisans.models import ArtisanProfession
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -37,6 +38,43 @@ class GetProfessions(APIView):
         professions = ProfessionModel.objects.filter(is_active=True)
         serializer = ProfessionSerializer(professions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetPricingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        artisan_id = request.data.get('artisan_id')
+        artisan = ArtisanModel.objects.get(artisan_id=artisan_id)
+        pricings = ArtisanProfession.objects.filter(artisan=artisan)
+        # print(pricings)
+        data = ArtisanProfessionSerializer(pricings, many=True).data
+        return Response({"success":True, "detail":data}, status=status.HTTP_200_OK)
+
+
+class UpdatePricingView(LoggingMixin, APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        artisan_id = request.data.get('artisan_id')
+        list_of_data = request.data.get('list_of_data')
+
+        artisan = ArtisanModel.objects.get(artisan_id=artisan_id)
+
+        # list_objects = [ArtisanProfession(artisan=artisan,name=ProfessionModel.objects.get(name=rec['name']),min_price=rec['min_price'],max_price=rec['max_price']) for rec in list_of_data]
+        for rec in list_of_data:
+            try:
+                artisan_profession = ArtisanProfession.objects.get(artisan=artisan, name__name=rec['name'])
+                artisan_profession.min_price = rec['min_price']
+                artisan_profession.max_price = rec['max_price']
+                artisan_profession.save()
+            except ArtisanProfession.DoesNotExist:
+                artisan_profession = ArtisanProfession.objects.create(artisan=artisan,name=ProfessionModel.objects.get(name=rec['name']),min_price=rec['min_price'],max_price=rec['max_price'])
+            artisan_profession = ArtisanProfession.objects.filter(artisan=artisan)
+            data = ArtisanProfessionSerializer(artisan_profession, many=True).data
+        # ArtisanProfession.objects.bulk_create(list_objects, update_conflicts=True, update_fields=['min_price', 'max_price'], unique_fields=['artisan','name'])
+        return Response({"success":True, "detail":data}, status=status.HTTP_200_OK)
+
 
 
 class GetAnArtisanView(LoggingMixin,APIView):

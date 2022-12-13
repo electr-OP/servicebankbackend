@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '*']
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -182,6 +183,14 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Service Bank",
+    "site_header": "Service Bank",
+    "site_brand": "Service Bank Admin",
+    "welcome_sign": "Welcome to Service Bank Admin Panel",
+    "copyright": "ServiceBank",
 }
 
 
