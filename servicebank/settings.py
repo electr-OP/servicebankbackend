@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import environ
 from datetime import timedelta
+import os
 
 # Initialise environment variables
 env = environ.Env()
@@ -118,26 +119,26 @@ WSGI_APPLICATION = "servicebank.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
- 'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME':env("DB_NAME"),
-         'USER': env("DB_USERNAME"),
-         'PASSWORD': env("DB_PASSWORD"),
-         'HOST': env("DB_HOST"),
-         'PORT': env("DB_PORT"),
-         'OPTIONS': {
-            'charset': 'utf8',
-         }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#  'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME':env("DB_NAME"),
+#          'USER': env("DB_USERNAME"),
+#          'PASSWORD': env("DB_PASSWORD"),
+#          'HOST': env("DB_HOST"),
+#          'PORT': env("DB_PORT"),
+#          'OPTIONS': {
+#             'charset': 'utf8',
+#          }
+#     }
+# }
 
 API_KEY_CUSTOM_HEADER = "HTTP_ACCESS_KEY"
 
@@ -237,6 +238,11 @@ FRONTEND_URL = env('FRONTEND_URL')
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/var/www/servicebank.mooo.com/static"
+STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'static'), )
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'uploads'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -6,8 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from Artisans.api.serializers.profile import *
-from rest_framework.permissions import IsAuthenticated
-from Artisans.models import ArtisanModel
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from Artisans.models import ArtisanModel, AgentModel
 from Artisans.models import ArtisanEnquiry
 from Job.models import ProfessionModel
 # from Merchant.permissions import IsMerchantUserPermission
@@ -39,6 +39,17 @@ class GetAnArtisanView(LoggingMixin,APIView):
         # data["pref_pickup_locs"] = pref_pickup_locs
         return Response({"success":True ,"detail":data}, status=status.HTTP_200_OK)
         
+
+class GetAgentsView(APIView):
+
+    permission_classes = [AllowAny,]
+
+    def get(self, request):
+
+        agents = AgentModel.objects.all()
+
+        return Response({"success":True, "detail":agents}, status=status.HTTP_200_OK)
+
 
 
 # class GetAllUsersMerchantView(LoggingMixin,APIView):

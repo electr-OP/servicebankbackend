@@ -33,6 +33,15 @@ class ArtisanModel(models.Model):
         ("CLOSED","Closed")
     ]
 
+    RANK = [
+        ("5", "Gold"),
+        ("4", "Silver"),
+        ("3", "Bronze"),
+        ("2", "Standard"),
+        ("1", "Basic")
+
+    ]
+
     artisan_id = models.CharField(max_length=100, blank=False, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=255,unique=True)
     code = models.CharField(max_length=255,unique=True,null=True,blank=True)
@@ -65,10 +74,12 @@ class ArtisanModel(models.Model):
     rc_number = models.CharField(max_length=100,null=True,blank=True)
     email_activation_token = models.CharField(max_length=255,null=True,unique=True,blank=True)
     rating = models.IntegerField(default=5)
+    rank = models.CharField(choices=RANK, max_length=50, default="1")
     has_set_rate = models.BooleanField(default=False,blank=True)
     has_set_profile = models.BooleanField(default=False) 
     has_added_asset = models.BooleanField(default=False)
     has_added_team = models.BooleanField(default=False)
+    agent = models.CharField(max_length=200, null=True, blank=True)
     business_url = models.CharField(null=True,unique=True,max_length=255,blank=True)
     twitter_username = models.CharField(max_length=255,null=True, blank=True)
     instagram_username = models.CharField(max_length=255,null=True, blank=True)
@@ -92,7 +103,18 @@ class ArtisanModel(models.Model):
         return self.name
 
 
-    
+class AgentModel(models.Model):
+
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'agents'
+        managed = True
+        verbose_name = 'Agent'
+        verbose_name_plural = 'Agents'
+
+    def __str__(self):
+        return self.name
 
 
 @receiver(post_save, sender=ArtisanModel)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from Artisans.models import ArtisanModel, ArtisanProfession
+from Artisans.models import ArtisanEnquiry
+from Artisans.api.serializers.profile import EnquirySerializer
 from Auth.api.serializers import UserSerializer
 from ..models.professions import ProfessionModel
 from django.contrib.auth import get_user_model
@@ -27,7 +29,10 @@ class JobArtisanSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         user = User.objects.get(email=instance.email, phone=instance.phone)
+        enquiries = ArtisanEnquiry.objects.filter(artisan=instance.id)
+        # print(enquiries)
         rep['user'] = UserSerializer(user).data
+        rep['enquiries'] = EnquirySerializer(enquiries, many=True).data
 
         return rep
 

@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(ArtisanModel)
 admin.site.register(ArtisanEnquiry)
 admin.site.register(ArtisanProfession)
+admin.site.register(AgentModel)

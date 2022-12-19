@@ -43,7 +43,6 @@ class LoginView(LoggingMixin,APIView):
             password = request.data['password']
             email = request.data.get('email')
             user = authenticate(username=email, password=password)
-            print(password)
             if user is not None:
                 if user.email_activated == False:
                     return Response ({"success":False, "detail":"Account not activated"}, status=status.HTTP_400_BAD_REQUEST)
@@ -287,3 +286,14 @@ class ValidateOTPView(APIView):
             except:
                 pass
             return Response({"success":False, "detail":"Token not Found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetUserDetailsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        
+        user = UserSerializer(request.user).data
+
+        return Response({"success":True, "detail":user}, status=status.HTTP_200_OK)

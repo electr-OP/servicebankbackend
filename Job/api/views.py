@@ -113,7 +113,7 @@ class Search(LoggingMixin,APIView):
         Get a professional
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = SearchSerializer(data=request.data)
