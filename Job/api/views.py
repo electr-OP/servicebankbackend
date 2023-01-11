@@ -1,5 +1,6 @@
 from turtle import back
 import uuid
+import random
 from Auth.api.permissions import HasAPIKey, ExternalAPIKEYPermission
 # from Notification.models.push import PushNotificationModel
 import re
@@ -7,10 +8,11 @@ import re
 # from Transporter.models.promo import PromoModel
 from Auth.api.serializers import UserSerializer
 from Artisans.api.serializers.profile import ArtisanSerializer
-from Job.models.professions import ProfessionModel
+from Job.models.professions import ProfessionModel, CategoryModel
 from Artisans.models import ArtisanModel
 from Artisans.models import ArtisanEnquiry
 from Artisans.models import ArtisanProfession
+from Notification.models.sms import SMSNotificationModel
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -36,6 +38,28 @@ class GetProfessions(APIView):
     def get(self, request):
 
         professions = ProfessionModel.objects.filter(is_active=True)
+        serializer = ProfessionSerializer(professions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetCategories(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+
+        categories = CategoryModel.objects.filter(is_active=True)
+        serializer = CategorySerializer(categories, many=True).data
+        return Response(serializer, status=status.HTTP_200_OK)
+
+
+class GetCategoryProfessions(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        category = request.data.get('category')
+        professions = ProfessionModel.objects.filter(is_active=True, category__name=category)
         serializer = ProfessionSerializer(professions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -103,10 +127,31 @@ class GetAnArtisanView(LoggingMixin,APIView):
         professions = []
         for item in professions_data:
             inst = ProfessionModel.objects.get(id=item)
-            professions.append(inst.name)
+            profession_serializer = ProfessionSerializer(inst).data
+            professions.append(profession_serializer)
         data["profession"] = professions
         return Response({"success":True ,"detail":data}, status=status.HTTP_200_OK)
         
+
+class RelatedArtisans(APIView):
+    """
+        Get related artisans to a given artisan
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        artisan_id = request.data.get('artisan_id')
+        related_artisans = ArtisanModel.objects.all().exclude(artisan_id=artisan_id)
+        related_artisans_data = ArtisanSerializer(related_artisans, many=True).data
+        
+        try:
+            related_artisans = random.sample(related_artisans_data, 3)
+        except ValueError:
+            related_artisans = random.sample(related_artisans_data, len(related_artisans_data))
+        return Response({"success":True, "detail":related_artisans}, status=status.HTTP_200_OK)
+
+
 
 class Search(LoggingMixin,APIView):
     """
@@ -118,7 +163,7 @@ class Search(LoggingMixin,APIView):
     def post(self, request):
         serializer = SearchSerializer(data=request.data)
         if serializer.is_valid():
-            location = request.data['location']
+            location = request.data.get('location')
             profession = request.data['profession']
             artisan_status = request.data.get('status')
 
@@ -128,7 +173,9 @@ class Search(LoggingMixin,APIView):
                 return Response({"detail":"Invalid Category"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-            artisans = ArtisanModel.objects.filter(wallet_balance__gte=-6000,city=location,profession__name=profession.name,is_verified=True,is_active=True)
+            artisans = ArtisanModel.objects.filter(wallet_balance__gte=-6000,profession__name=profession.name,is_verified=True,is_active=True)
+            if location:
+                artisans = artisans.filter(city=location)
             if artisan_status:
                 artisans = artisans.filter(status=artisan_status)            
             data = JobArtisanSerializer(artisans, many=True).data
@@ -165,5 +212,11 @@ class CreateEnquiryView(LoggingMixin, APIView):
             time = time
 
         )
+        SMSNotificationModel.objects.create(
+                    user=request.user,
+                    phone_number=artisan_obj.phone,
+                    message=f'You have a new booking from /n {name}, {phone}',
+
+                )
 
         return Response({"success":True, "detail":"Enquiry Created"}, status=status.HTTP_201_CREATED)

@@ -5,6 +5,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
+from Notification.lib.termii import TermiiSmsClass
 
 # from Notification.lib.termii import TermiiSmsClass
 
@@ -42,24 +43,25 @@ def send_sms_notification(sender, instance, created, **kwargs):
         phone_number = instance.phone_number
         message =instance.message
 
-        # try:
+        try:
 
-        #     #handle handle sms sending here
+            # handle handle sms sending here
         #     #AWS
         #     sms_response = AWSsmsClass.send_sms(phone_number,message)
         #     if not sms_response['status']:
         #         instance.sent = False
         #         instance.save()
 
-        #     #TERMII
-        #     termii = TermiiSmsClass.send_sms(phone_number,message)
-        #     if not termii['status'] and not sms_response['status']:
-        #         instance.sent = False
-        #         instance.save()
+        #TERMII
+            termii = TermiiSmsClass.send_sms(phone_number,message)
+            # if not termii['status'] and not sms_response['status']:
+            if not termii['status']:
+                instance.sent = False
+                instance.save()
 
-        # except Exception as error: 
-        #     #TERMII
-        #     termii = TermiiSmsClass.send_sms(phone_number,message)
+        except Exception as error: 
+            #TERMII
+            termii = TermiiSmsClass.send_sms(phone_number,message)
              
         #     print(error)
         #     instance.sent = False

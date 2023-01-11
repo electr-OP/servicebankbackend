@@ -3,7 +3,7 @@ from Artisans.models import ArtisanModel, ArtisanProfession
 from Artisans.models import ArtisanEnquiry
 from Artisans.api.serializers.profile import EnquirySerializer
 from Auth.api.serializers import UserSerializer
-from ..models.professions import ProfessionModel
+from ..models.professions import ProfessionModel, CategoryModel
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -14,7 +14,7 @@ class SearchSerializer(serializers.Serializer):
        search serializer
     """
 
-    location = serializers.CharField(required=True, allow_blank=False)
+    location = serializers.CharField(required=False, allow_blank=True)
     profession = serializers.CharField(required=True, allow_blank=False)
     status = serializers.CharField(required=False, allow_blank=True)
 
@@ -48,6 +48,25 @@ class ProfessionSerializer(serializers.ModelSerializer):
 
         # Tuple of serialized custom model fields
         fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    """
+        Category serializer
+    """
+    class Meta:
+        model = CategoryModel
+
+        # Tuple of serialized custom model fields
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        result = super(CategorySerializer, self).to_representation(instance)
+        profession_data = ProfessionModel.objects.filter(category=instance.id)
+        profession_data = ProfessionSerializer(profession_data, many=True).data
+        result['profession'] = profession_data
+        return result
 
 
 class ArtisanProfessionSerializer(serializers.ModelSerializer):

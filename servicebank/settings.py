@@ -119,26 +119,26 @@ WSGI_APPLICATION = "servicebank.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
- 'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME':env("DB_NAME"),
-         'USER': env("DB_USERNAME"),
-         'PASSWORD': env("DB_PASSWORD"),
-         'HOST': env("DB_HOST"),
-         'PORT': env("DB_PORT"),
-         'OPTIONS': {
-            'charset': 'utf8',
-         }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#  'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME':env("DB_NAME"),
+#          'USER': env("DB_USERNAME"),
+#          'PASSWORD': env("DB_PASSWORD"),
+#          'HOST': env("DB_HOST"),
+#          'PORT': env("DB_PORT"),
+#          'OPTIONS': {
+#             'charset': 'utf8',
+#          }
+#     }
+# }
 
 API_KEY_CUSTOM_HEADER = "HTTP_ACCESS_KEY"
 
@@ -218,12 +218,13 @@ USE_I18N = True
 USE_TZ = True
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
 EMAIL_HOST_USER = env("CORE_EMAIL_ADDRESS")
-EMAIL_HOST_PASSWORD = env("CORE_EMAIL_PASSWORD")
+# EMAIL_HOST_PASSWORD = env("CORE_EMAIL_PASSWORD")
 
 
 AUTHENTICATION_BACKENDS = (
@@ -249,6 +250,13 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AWS_ACCESS_KEY_ID= env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+
 GOOGLE_PLACE_API_KEY = env("GOOGLE_PLACE_API_KEY")
 
 PAYSTACK_SECRET_KEY =  env('PAYSTACK_SECRET_KEY') 
+
+TERMII_BASE_URL="https://api.ng.termii.com"
+TERMII_SENDER_ID="ServiceBank"
+TERMII_API_KEY=env("TERMII_API_KEY")
