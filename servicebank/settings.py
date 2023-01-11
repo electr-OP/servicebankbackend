@@ -239,7 +239,7 @@ FRONTEND_URL = env('FRONTEND_URL')
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = "/var/www/servicebank.mooo.com/static"
+STATIC_ROOT = "/var/www/api.servicehose.com/static"
 STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'static'), )
 
 MEDIA_URL = '/media/'
