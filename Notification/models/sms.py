@@ -5,7 +5,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
-from Notification.lib.termii import TermiiSmsClass
+from Notification.utils.termii import TermiiSmsClass
 
 # from Notification.lib.termii import TermiiSmsClass
 
