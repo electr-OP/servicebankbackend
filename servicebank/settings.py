@@ -98,6 +98,7 @@ TEMPLATES = [
 
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['https://*.servicehose.com']
 
 CORS_ALLOW_HEADERS = [
     "accept",
