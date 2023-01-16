@@ -150,14 +150,14 @@ class RegisterView(LoggingMixin,APIView):
                 # verify_link = settings.FRONTEND_URL + '/email-verify/' + token
                 html_content = render_to_string(r'C:\Users\User\Desktop\Hayjay Programming\VS_Code_Projects\servicebankbackend\Notification\templates\otp_email.html', {'Brand':"Service Bank", 'token': initializer.token})
                 text_content = strip_tags(html_content) 
-                EmailNotificationModel.objects.create(
-                    user=initializer,
-                    email_address=user_details.get('email'),
-                    email_type="2",
-                    subject="EMAIL VERIFICATION",
-                    message=text_content,
-                    html_message=html_content
-                )
+                # EmailNotificationModel.objects.create(
+                #     user=initializer,
+                #     email_address=user_details.get('email'),
+                #     email_type="2",
+                #     subject="EMAIL VERIFICATION",
+                #     message=text_content,
+                #     html_message=html_content
+                # )
                 SMSNotificationModel.objects.create(
                     user=initializer,
                     phone_number=user_details.get('phone'),
