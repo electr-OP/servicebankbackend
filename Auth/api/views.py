@@ -161,7 +161,7 @@ class RegisterView(LoggingMixin,APIView):
                 SMSNotificationModel.objects.create(
                     user=initializer,
                     phone_number=user_details.get('phone'),
-                    message=initializer.token,
+                    message="Your Confirmation code is "+str(initializer.token),
 
                 )
 
@@ -276,6 +276,32 @@ class ValidateOTPView(APIView):
                 artisan_obj = ArtisanModel.objects.get(email=user_details.get('email'),phone=user_details.get('phone'))
                 artisan = ArtisanSerializer(artisan_obj).data
                 user_details["artisan"] = artisan
+                nxtline = '\n'
+                text_content = f"Dear {user_details.get('first_name')},{nxtline} {nxtline} Thank You for signing up as a Service Bank Artisan. \
+                                {nxtline}{nxtline} First thing to do is to go to your profile and complete all details there, then you will be eligible for us to start matching you to clients.{nxtline} \
+                                    We hope you enjoy your time as a Service Bank Artisan.{nxtline}{nxtline} Best Regards,{nxtline}Service Bank."
+                EmailNotificationModel.objects.create(
+                    user=userExists,
+                    email_address=user_details.get('email'),
+                    email_type="1",
+                    subject="WELCOME TO SERVICE BANK",
+                    message=text_content,
+                    html_message=''
+                )
+            else:
+                nxtline = '\n'
+                text_content = f"Dear {user_details.get('first_name')},{nxtline} {nxtline} Thank You for signing up as a Service Bank User. \
+                                {nxtline}{nxtline} Start searching for experts by going to https://app.servicehose.com/profiles.{nxtline} \
+                                    We hope you enjoy your time as a Service Bank User.{nxtline}{nxtline} Best Regards,{nxtline}Service Bank."
+                EmailNotificationModel.objects.create(
+                    user=userExists,
+                    email_address=user_details.get('email'),
+                    email_type="1",
+                    subject="WELCOME TO SERVICE BANK",
+                    message=text_content,
+                    html_message=''
+                )
+
             return Response({"success":True, "tokens":data, "detail":user_details}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)

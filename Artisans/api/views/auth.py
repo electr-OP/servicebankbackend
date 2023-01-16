@@ -6,11 +6,12 @@ from Auth.models import User
 from Artisans.models.users import ArtisanUserModel
 from Artisans.api.serializers.auth import ArtisanRegisterationSerializer
 from Auth.api.permissions import HasAPIKey
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from Auth.api.serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 # from Merchant.serializers import MerchantEmailActivationSerializer,MerchantLoginSerializer,UsersMerchantPermissionSerializer
-from Artisans.models import ArtisanModel
+from Artisans.models import ArtisanModel, AgentModel
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
@@ -151,4 +152,3 @@ class ActivateArtisanAccountView(LoggingMixin,APIView):
             pass
 
         return Response({"detail":"Artisan Activated"}, status=status.HTTP_200_OK)
-    

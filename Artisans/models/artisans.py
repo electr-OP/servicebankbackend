@@ -8,6 +8,19 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
+class AgentModel(models.Model):
+
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'agents'
+        managed = True
+        verbose_name = 'Agent'
+        verbose_name_plural = 'Agents'
+
+    def __str__(self):
+        return self.name
+
 
 class ArtisanModel(models.Model):
     """
@@ -79,7 +92,7 @@ class ArtisanModel(models.Model):
     has_set_profile = models.BooleanField(default=False) 
     has_added_asset = models.BooleanField(default=False)
     has_added_team = models.BooleanField(default=False)
-    agent = models.CharField(max_length=200, null=True, blank=True)
+    agent = models.ForeignKey(AgentModel,on_delete=models.CASCADE,null=True,blank=True)
     business_url = models.CharField(null=True,unique=True,max_length=255,blank=True)
     twitter_username = models.CharField(max_length=255,null=True, blank=True)
     instagram_username = models.CharField(max_length=255,null=True, blank=True)
@@ -99,20 +112,6 @@ class ArtisanModel(models.Model):
     
 
  
-    def __str__(self):
-        return self.name
-
-
-class AgentModel(models.Model):
-
-    name = models.CharField(max_length=200)
-
-    class Meta:
-        db_table = 'agents'
-        managed = True
-        verbose_name = 'Agent'
-        verbose_name_plural = 'Agents'
-
     def __str__(self):
         return self.name
 

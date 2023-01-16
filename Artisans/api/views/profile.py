@@ -48,7 +48,9 @@ class GetAgentsView(APIView):
 
         agents = AgentModel.objects.all()
 
-        return Response({"success":True, "detail":agents}, status=status.HTTP_200_OK)
+        data = AgentSerializer(agents, many=True)
+
+        return Response({"success":True, "detail":data}, status=status.HTTP_200_OK)
 
 
 

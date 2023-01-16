@@ -212,10 +212,11 @@ class CreateEnquiryView(LoggingMixin, APIView):
             time = time
 
         )
+        nxtline = '\n'
         SMSNotificationModel.objects.create(
                     user=request.user,
                     phone_number=artisan_obj.phone,
-                    message=f'You have a new booking from /n {name}, {phone}',
+                    message=f'You have a new booking from {nxtline} {name}, {phone}',
 
                 )
 

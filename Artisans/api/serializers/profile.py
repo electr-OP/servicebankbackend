@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Artisans.models import ArtisanModel, ArtisanEnquiry
+from Artisans.models import ArtisanModel, ArtisanEnquiry, AgentModel
 
 
 class ArtisanSerializer(serializers.ModelSerializer):
@@ -33,4 +33,11 @@ class EnquirySerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtisanEnquiry
         
+        fields = '__all__'
+
+
+class AgentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AgentModel
         fields = '__all__'
