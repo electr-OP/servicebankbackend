@@ -10,60 +10,60 @@ class HasAPIKey(BaseHasAPIKey):
     model = ApiKey
 
 
-class IsMerchantUserPermission(permissions.BasePermission):
-    """
-    Global permission check if user is a valid merchant user and if merchant exist.
-    """
-    message = 'You are not allowed to do this'
+# class IsMerchantUserPermission(permissions.BasePermission):
+#     """
+#     Global permission check if user is a valid merchant user and if merchant exist.
+#     """
+#     message = 'You are not allowed to do this'
 
-    def has_permission(self, request, view):
+#     def has_permission(self, request, view):
 
-        merchant_id = request.data['merchant_id'] if 'merchant_id' in request.data else None
+#         merchant_id = request.data['merchant_id'] if 'merchant_id' in request.data else None
 
-        if not merchant_id or not request.user:
-            raise _NotAllowedException()
+#         if not merchant_id or not request.user:
+#             raise _NotAllowedException()
         
-        #check if merchant exist
-        try:
-            merchant = MerchantModel.objects.get(merchant_id=merchant_id)
-        except MerchantModel.DoesNotExist:
-            raise _MerchantDoesNotExistException
+#         #check if merchant exist
+#         try:
+#             merchant = MerchantModel.objects.get(merchant_id=merchant_id)
+#         except MerchantModel.DoesNotExist:
+#             raise _MerchantDoesNotExistException
  
-        #check if user is a merchant user
-        try:
-            user_confirmation = MerchantUserModel.objects.get(merchant=merchant.id,user=request.user)
-        except MerchantUserModel.DoesNotExist:
-            raise _NotAllowedException()  
-        except MerchantUserModel.MultipleObjectsReturned:
-            user_confirmation = MerchantUserModel.objects.filter(merchant=merchant.id,user=request.user).first()
-        return True
+#         #check if user is a merchant user
+#         try:
+#             user_confirmation = MerchantUserModel.objects.get(merchant=merchant.id,user=request.user)
+#         except MerchantUserModel.DoesNotExist:
+#             raise _NotAllowedException()  
+#         except MerchantUserModel.MultipleObjectsReturned:
+#             user_confirmation = MerchantUserModel.objects.filter(merchant=merchant.id,user=request.user).first()
+#         return True
 
 
-class MerchantAuthorizationPermission(permissions.BasePermission):
-    """
-    Global permission check if merchant is authorized.
-    """
-    message = 'Please activate your email account to continue'
+# class MerchantAuthorizationPermission(permissions.BasePermission):
+#     """
+#     Global permission check if merchant is authorized.
+#     """
+#     message = 'Please activate your email account to continue'
 
-    def has_permission(self, request, view):
+#     def has_permission(self, request, view):
 
-        #retrieve merchant details from key
-        if "Access-Key" not in request.headers:
-            raise _NoAPIKEYException()
+#         #retrieve merchant details from key
+#         if "Access-Key" not in request.headers:
+#             raise _NoAPIKEYException()
             
-        key = request.headers["Access-Key"]
-        if not key:
-            raise _NoAPIKEYException()
+#         key = request.headers["Access-Key"]
+#         if not key:
+#             raise _NoAPIKEYException()
 
-        try:
-            merchant = ApiKey.objects.get_from_key(key).merchant
-        except:
-            raise _InvalidAPIKEYException()
+#         try:
+#             merchant = ApiKey.objects.get_from_key(key).merchant
+#         except:
+#             raise _InvalidAPIKEYException()
 
 
-        if merchant.email_activated and merchant.is_active:
-            return True
-        raise _MerchantAuthorizationException()
+#         if merchant.email_activated and merchant.is_active:
+#             return True
+#         raise _MerchantAuthorizationException()
 
 
 class AdminAPIKEYAuthorizationPermission(permissions.BasePermission):

@@ -148,6 +148,7 @@ class RegisterView(LoggingMixin,APIView):
                 print(user_details)
                 # token = user_details.data.get('uid')
                 # verify_link = settings.FRONTEND_URL + '/email-verify/' + token
+                print('got hereee')
                 html_content = render_to_string(r'C:\Users\User\Desktop\Hayjay Programming\VS_Code_Projects\servicebankbackend\Notification\templates\otp_email.html', {'Brand':"Service Bank", 'token': initializer.token})
                 text_content = strip_tags(html_content) 
                 # EmailNotificationModel.objects.create(
@@ -158,6 +159,7 @@ class RegisterView(LoggingMixin,APIView):
                 #     message=text_content,
                 #     html_message=html_content
                 # )
+                print('got hereee????')
                 SMSNotificationModel.objects.create(
                     user=initializer,
                     phone_number=user_details.get('phone'),
